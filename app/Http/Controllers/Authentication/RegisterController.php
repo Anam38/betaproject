@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class RegisterController extends Controller
 {
@@ -27,14 +28,26 @@ class RegisterController extends Controller
         return response()->json($error);
       }
       try {
+
+        $google2fa = app('pragmarx.google2fa');
+        // Add the secret key to the registration data
+        $secret = $google2fa->generateSecretKey();
         // insert to table user
         DB::table('users')->insert([
           'name'      => $request->username,
           'email'     => $request->email,
-          'password'  => Hash::make($request->password)
+          'password'  => Hash::make($request->password),
+          'google2fa_secret' => $secret
         ]);
+        $datauth = array(
+            'username'  => $request->username,
+            'email' => $request->email,
+            'go_secret' => $secret,
+            'token' => base64_encode($request->username.$request->email)
+        );
+        // save session user
+        Session::put('authuser',$datauth);
 
-        // Auth::login(['username' => $request->username, 'password' => $request->password]);
         return response()->json(collect()->put('success','success'));
     } catch (\Exception $e) {
       $error = collect();

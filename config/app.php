@@ -176,7 +176,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         // ...
         Mews\Captcha\CaptchaServiceProvider::class,
-
+        // ...
+        PragmaRX\Google2FALaravel\ServiceProvider::class,
     ],
 
     /*
@@ -229,6 +230,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         // ...
         'Captcha' => Mews\Captcha\Facades\Captcha::class,
+        'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
 
     ],
 

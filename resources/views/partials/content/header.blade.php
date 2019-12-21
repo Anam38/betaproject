@@ -43,45 +43,23 @@
               </li>
               <li class="dropdown notification-list"><a class="nav-link dropdown-toggle arrow-none waves-light waves-effect" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"><i class="dripicons-bell noti-icon"></i> <span class="badge badge-danger badge-pill noti-icon-badge">2</span></a>
                   <div class="dropdown-menu dropdown-menu-right dropdown-lg" style="">
-                      <!-- item-->
-                      <h6 class="dropdown-item-text">Notifications (18)</h6>
                       <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 363px;">
-                          <div class="slimscroll notification-list" style="overflow: hidden; width: auto; height: 363px;">
-                              <!-- item-->
-                              <a href="javascript:void(0);" class="dropdown-item notify-item active">
-                                  <div class="notify-icon bg-success"><i class="mdi mdi-cart-outline"></i></div>
-                                  <p class="notify-details">Your order is placed<small class="text-muted">Dummy text of the printing and typesetting industry.</small></p>
-                              </a>
-                              <!-- item-->
-                              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                  <div class="notify-icon bg-warning"><i class="mdi mdi-message"></i></div>
-                                  <p class="notify-details">New Message received<small class="text-muted">You have 87 unread messages</small></p>
-                              </a>
-                              <!-- item-->
-                              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                  <div class="notify-icon bg-info"><i class="mdi mdi-glass-cocktail"></i></div>
-                                  <p class="notify-details">Your item is shipped<small class="text-muted">It is a long established fact that a reader will</small></p>
-                              </a>
-                              <!-- item-->
-                              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                  <div class="notify-icon bg-primary"><i class="mdi mdi-cart-outline"></i></div>
-                                  <p class="notify-details">Your order is placed<small class="text-muted">Dummy text of the printing and typesetting industry.</small></p>
-                              </a>
-                              <!-- item-->
-                              <a href="javascript:void(0);" class="dropdown-item notify-item">
-                                  <div class="notify-icon bg-danger"><i class="mdi mdi-message"></i></div>
-                                  <p class="notify-details">New Message received<small class="text-muted">You have 87 unread messages</small></p>
-                              </a>
-                          </div>
                           <div class="slimScrollBar" style="background: rgb(118, 129, 173); width: 7px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px;"></div>
                           <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div>
                       </div>
                       <!-- All--><a href="javascript:void(0);" class="dropdown-item text-center text-primary">View all <i class="fi-arrow-right"></i></a></div>
               </li>
               <li class="dropdown">
-                  <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false"><img src="{{ asset('assets/adminTemplate/assets/images/users/user-4.jpg') }}" alt="profile-user" class="rounded-circle"> <span class="ml-1 nav-user-name hidden-sm">Amelia <i class="mdi mdi-chevron-down"></i></span></a>
-                  <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#"><i class="dripicons-user text-muted mr-2"></i> Profile</a> <a class="dropdown-item" href="#"><i class="dripicons-wallet text-muted mr-2"></i> My Wallet</a> <a class="dropdown-item" href="#"><i class="dripicons-gear text-muted mr-2"></i> Settings</a> <a class="dropdown-item" href="#"><i class="dripicons-lock text-muted mr-2"></i> Lock screen</a>
-                      <div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="dripicons-exit text-muted mr-2"></i> Logout</a></div>
+                  <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                    <!-- <img src="{{ asset('assets/adminTemplate/assets/images/users/user-4.jpg') }}" alt="profile-user" class="rounded-circle"> -->
+                    <span class="ml-1 nav-user-name hidden-sm">
+                      {{ Session::get('authuser')['username']}}
+                      <i class="mdi mdi-chevron-down"></i>
+                    </span>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right">
+                      <a class="dropdown-item" href="{{ route('command.index') }}"><i class="dripicons-lock text-muted mr-2"></i> Terminal</a>
+                  <div class="dropdown-divider"></div><a class="dropdown-item" href="{{ route('logout') }}"><i class="dripicons-exit text-muted mr-2"></i> Logout</a></div>
               </li>
           </ul>
           <!--end topbar-nav-->
