@@ -34,6 +34,13 @@ Route::group(['prefix'=>'', 'middleware' => ['isUser']],function(){
 
 Route::group(['prefix'=>'cloud', 'middleware' => ['isUser']],function(){
 	Route::get('','Cloud\CloudController@index')->name('cloud.index');
+	Route::post('','Cloud\CloudController@insert')->name('cloud.submit');
+	Route::get('update','Cloud\CloudController@getdata')->name('cloud.get');
+	Route::post('update','Cloud\CloudController@update')->name('cloud.update');
+	Route::post('delete','Cloud\CloudController@delete')->name('cloud.delete');
+	Route::post('commandline','Cloud\CommandController@index')->name('cloud.command');
+	Route::post('information','Cloud\CommandController@getInformation');
+	Route::post('testconnection','Cloud\CloudController@testConnection');
 });
 
 Route::group(['prefix'=>'command', 'middleware' => ['isUser','AuthenticatorAuth']],function(){

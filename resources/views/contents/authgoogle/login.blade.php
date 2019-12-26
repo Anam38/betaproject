@@ -1,4 +1,5 @@
 @extends('partials.content.master')
+@include('contents.authgoogle.additional.login')
 @section('content')
   <div class="container-fluid">
       <div class="row">
@@ -18,6 +19,7 @@
       <div class="row">
           <div class="col-lg-12">
               <div class="card">
+                  <h6 class="text-right mr-4 mt-3 time-server">Time in Server</h6>
                 <div class="card-body" style="position: relative;">
                   <h4 class="text-center">Login Google Authenticator</h4><br>
                   <div class="row">

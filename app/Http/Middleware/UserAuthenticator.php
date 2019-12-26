@@ -3,11 +3,19 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use App\Repositories\Database\UserTable;
+use App\Repositories\Session\AuthSession;
 
 class UserAuthenticator
 {
+    protected $user;
+    protected $session;
+
+    public function __construct()
+    {
+      $this->user   =  new UserTable;
+      $this->session   =  new AuthSession;
+    }
     /**
      * Handle an incoming request.
      *
@@ -17,8 +25,8 @@ class UserAuthenticator
      */
     public function handle($request, Closure $next)
     {
-      $user = (object)Session::get('authuser');
-      $valid = DB::table('users')->where('email',$user->email)->first();
+      $user = (object)$this->session->GetAuthUser();
+      $valid = $this->user->UserWhere('email',$user->email);
       if ($valid->google2fa_secret_verified) {
         return $next($request);
       }else {

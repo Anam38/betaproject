@@ -2,12 +2,20 @@
 
 namespace App\Http\Middleware;
 
+use App\Repositories\Database\UserTable;
+use App\Repositories\Session\AuthSession;
 use Closure;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
 class AuthenticatorAuth
 {
+    protected $user;
+    protected $session;
+
+    public function __construct()
+    {
+      $this->user   =  new UserTable;
+      $this->session   =  new AuthSession;
+    }
     /**
      * Handle an incoming request.
      *
@@ -17,10 +25,10 @@ class AuthenticatorAuth
      */
     public function handle($request, Closure $next)
     {
-      $user = (object)Session::get('authuser');
-      $valid = DB::table('users')->where('email',$user->email)->first();
-        if (Session::has('authenticator')) {
-            $userAuthenticator = Session::get('authenticator');
+      $user = (object)$this->session->GetAuthUser();
+      $valid = $this->user->UserWhere('email',$user->email);
+        if ($this->session->HashAuthenticator()) {
+            $userAuthenticator = $this->session->GetAuthenticator();
             if ($userAuthenticator == base64_encode($valid->google2fa_secret)) {
               return $next($request);
             }

@@ -68,7 +68,6 @@ class Phpshell {
                 $new_dir = '/';
             }
 
-            // dd(@chdir($new_dir),$new_dir);
             /* Try to change directory. */
             if (@chdir($new_dir)) {
                 Session::put('cwd', $new_dir);

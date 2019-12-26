@@ -4,17 +4,26 @@ namespace App\Http\Controllers\Authentication;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use App\Repositories\Database\UserTable;
+use App\Repositories\Session\AuthSession;
 
 class RegisterGoogleController extends Controller
 {
+  protected $user;
+  protected $session;
+
+  public function __construct()
+  {
+    $this->user   =  new UserTable;
+    $this->session   =  new AuthSession;
+  }
+
     public function index()
     {
       // Initialise the 2FA class
         $google2fa = app('pragmarx.google2fa');
-        $userSesseion = (object)Session::get('authuser');
-        $user  =  DB::table('users')->where('email',$userSesseion->email)->first();
+        $userSesseion = (object)$this->session->GetAuthUser();
+        $user  =  $this->user->UserWhere('email',$userSesseion->email);
 
         $QR_Image = $google2fa->getQRCodeInline(
             config('app.name'),
@@ -34,7 +43,7 @@ class RegisterGoogleController extends Controller
     {
       $google2fa = app('pragmarx.google2fa');
       // get data user from session
-      $user = (object)Session::get('authuser');
+      $user = (object)$this->session->GetAuthUser();
 
       $validator = \Validator::make($request->all(), [
           'pin' => 'required',
@@ -58,19 +67,21 @@ class RegisterGoogleController extends Controller
               return redirect()->back()->with('errors', [$updateuser]);
             }
         }else {
-          return redirect()->back()->with('errors', ['PIN Invalid']);
+          return redirect()->back()->with('errors', ['Invalid PIN']);
         }
     }
 
     public function updateuser($secret)
     {
       try {
-        $user = (object)Session::get('authuser');
-        $user  =  DB::table('users')->where('email',$user->email);
-        $user->update([
-          'google2fa_secret_verified' => $secret
-        ]);
-        return true;
+        $user = (object)$this->session->GetAuthUser();
+        $dataupdate = array('google2fa_secret_verified' => $secret);
+        $user  =  $this->user->UserUpdate($user->email,$dataupdate);
+        if ($user) {
+          return true;
+        }else {
+          return 'filed update data';
+        }
       } catch (\Exception $e) {
         return $e->getMessage();
       }

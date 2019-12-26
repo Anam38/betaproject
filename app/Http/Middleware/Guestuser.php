@@ -3,10 +3,16 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Session;
+use App\Repositories\Session\AuthSession;
 
 class Guestuser
 {
+    protected $session;
+
+    public function __construct()
+    {
+      $this->session   =  new AuthSession;
+    }
     /**
      * Handle an incoming request.
      *
@@ -16,7 +22,7 @@ class Guestuser
      */
     public function handle($request, Closure $next)
     {
-      if (Session::has('authuser')) {
+      if ($this->session->HashAuthUser()) {
         return redirect()->route('home');
       }else {
         return $next($request);
