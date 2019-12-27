@@ -30,6 +30,7 @@ class Connection
 		$cpu_speed = $ssh->exec("lscpu | grep MHz | sed 's/^.*: //'");
 		// memory
 		$memory = $ssh->exec('free -m | grep Mem | sed "s/^.*: //"');
+		// dd($ssh->exec('cat /proc/meminfo; free -m'));
 		$memory = trim(preg_replace('/\s+/', ' ', $memory));
 		$memory = explode(' ',$memory);
 		// hostname
@@ -43,7 +44,7 @@ class Connection
 		$disk = $ssh->exec('df -h --total | grep "total" | sed "s/total //"');
 		$disk = trim(preg_replace('/\s+/', ' ', $disk));
 		$disk = explode(' ',$disk);
-		
+
 		$data = array(
 			'host_name'	=> $host_name,
 			'cpu_speed'	=> $cpu_speed,

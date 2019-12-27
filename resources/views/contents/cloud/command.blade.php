@@ -7,7 +7,7 @@
               <div class="page-title-box">
                   <div class="float-right">
                       <ol class="breadcrumb">
-                          <li class="breadcrumb-item active">Command line</li>
+                          <li class="breadcrumb-item active">Cloud / Command line</li>
                       </ol>
                   </div>
                   <h4 class="page-title">Cloud</h4></div>

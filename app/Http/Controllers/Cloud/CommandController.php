@@ -29,6 +29,7 @@ class CommandController extends Controller
         $session = $this->Session->GetSession('cloud');
         // login server
         $this->ssh = $this->SSH2->Login($session->ip_address,$session->port,$session->username,$session->password);
+        // $information = $this->SSH2->getInformation($this->ssh);
         // running command
         $this->command($request->command);
         return view('contents.cloud.command');

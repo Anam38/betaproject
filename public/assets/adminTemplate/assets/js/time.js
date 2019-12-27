@@ -60,7 +60,7 @@ getinformation = function() {
     success : function(response){
       var memorycount = response.memory[0];
       var memoryuse = response.memory[1];
-      var memoryspace = response.memory[2];
+      var memoryspace = response.memory[5];
 
       var disckcount = response.disck[0];
       var disckuse = response.disck[1];
@@ -83,17 +83,17 @@ getinformation = function() {
                         '<i class="mdi mdi-circle-outline d-block pr-1 pl-2 font-18 text-primary"></i> Count= '+memorycount+'Mb'+
                         '<i class="mdi mdi-circle-outline d-block pr-1 pl-2 font-18 text-danger"></i> Used= '+memoryuse+'Mb'+
                         '<i class="mdi mdi-circle-outline d-block pr-1 pl-2 font-18 text-warning"></i>Free= '+memoryspace+'Mb</div>'+
-                            '<div class="progress">'+
-                            '<div class="progress-bar bg-danger" title="Used" role="progressbar" style="width: 50%">'+result_use_memory+'%</div>'+
-                            '<div class="progress-bar bg-warning" title="Free" role="progressbar" style="width: 50%">'+result_free_memory+'%</div>'+
+                            '<div class="progress" style="background-color:#224ae5;">'+
+                            '<div class="progress-bar bg-danger" title="Used" role="progressbar" style="width:'+result_use_memory+'%">'+result_use_memory+'%</div>'+
+                            '<div class="progress-bar bg-warning" title="Free" role="progressbar" style="width:'+result_free_memory+'%">'+result_free_memory+'%</div>'+
                         '</div>');
       $('#disck').html('<div class="form-check-inline my-1 font-10 " style="margin-left: -10px;">'+
                         '<i class="mdi mdi-circle-outline d-block pr-1 pl-2 font-18 text-primary"></i> Count= '+disckcount+''+
                         '<i class="mdi mdi-circle-outline d-block pr-1 pl-2 font-18 text-danger"></i> Used= '+disckuse+''+
                         '<i class="mdi mdi-circle-outline d-block pr-1 pl-2 font-18 text-warning"></i>Free= '+disckspace+'</div>'+
-                            '<div class="progress">'+
-                            '<div class="progress-bar bg-danger" title="Used" role="progressbar" style="width: 50%">'+result_use_disck+'</div>'+
-                            '<div class="progress-bar bg-warning" title="Free" role="progressbar" style="width: 50%">'+result_free_disck+'%</div>'+
+                            '<div class="progress" style="background-color:#224ae5;">'+
+                            '<div class="progress-bar bg-danger" title="Used" role="progressbar" style="width:'+result_use_disck+'">'+result_use_disck+'</div>'+
+                            '<div class="progress-bar bg-warning" title="Free" role="progressbar" style="width:'+result_free_disck+'%">'+result_free_disck+'%</div>'+
                         '</div>');
     },
     error: function (e) {
@@ -104,4 +104,4 @@ getinformation = function() {
 update();
 getinformation()
 window.setInterval(update, 1000);
-setInterval(function(){getinformation(); },5000);
+// setInterval(function(){getinformation(); },5000);
