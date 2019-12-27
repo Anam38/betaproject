@@ -74,14 +74,6 @@
                   <h5 class="ml-2 mb-0">Information for command Git</h5>
                   <ul class="mb-1">
                       <li>Git Push example : "git push https://username:password@myrepository.biz/file.git --all"</li>
-                      <li>Nulla volutpat aliquam velit
-                          <ul>
-                              <li>Phasellus iaculis neque</li>
-                              <li>Purus sodales ultricies</li>
-                              <li>Vestibulum laoreet porttitor sem</li>
-                          </ul>
-                      </li>
-                      <li>Faucibus porta lacus fringilla vel</li>
                   </ul>
                   <form class="command-form" action="{{ route('cloud.command')}}" method="post">
                     <div><input name="levelup" id="levelup" type="hidden"></div>
