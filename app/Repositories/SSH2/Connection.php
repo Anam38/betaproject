@@ -16,12 +16,16 @@ class Connection
 
 	public function Login($ip_address,$port,$username,$password)
 	{
-		$ssh = new SSH2($ip_address,$port);
-		if (!$ssh->login($username, $password)) {
-			return false;
-		}else {
-			// $this->getInformation($ssh,$ip_address);
-			return $ssh;
+		try {
+			$ssh = new SSH2($ip_address,$port);
+			if (!$ssh->login($username, $password)) {
+				return false;
+			}else {
+				// $this->getInformation($ssh,$ip_address);
+				return $ssh;
+			}
+		} catch (\Exception $e) {
+			return $e->getMessage();
 		}
 	}
 	public function getInformation($ssh)
@@ -58,7 +62,7 @@ class Connection
 	public function getLocation($ssh,$ip_address)
 	{
 		// command bash get location
-		$location = $ssh->exec('curl -s https://ipvigilante.com/194.31.53.214');
+		$location = $ssh->exec('curl -s https://ipvigilante.com/'.$ip_address);
 		$location = json_decode($location);
 		// save session location
 		$this->Session->PutSession('location',$location);

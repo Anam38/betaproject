@@ -48,9 +48,6 @@ class CommandController extends Controller
     }
     public function command($command)
     {
-      // $this->Session->PutSession('cwd','');
-      // $this->Session->PutSession('cwd_name','anam');
-
       // get session info data cloud from database
       $sessionTable = $this->Session->GetSession('cloud');
       $sessionOutput = collect($this->Session->GetSession('output'));
@@ -68,7 +65,12 @@ class CommandController extends Controller
             if (strpos($command, 'cd') !== false) {
               $command = str_replace('cd','',$command);
               $command = str_replace(' ','',$command);
-              if (strpos($command, '..') !== false) {
+              if ($command == '~'){
+                $this->Session->PutSession('cwd','');
+                $pwd = $this->ssh->exec('cd ~; pwd');
+                $pwd = trim(preg_replace('/\s+/', ' ', $pwd));
+                $this->Session->PutSession('cwd_name',$pwd);
+              }elseif (strpos($command, '..') !== false) {
                 $commands = $this->ssh->exec('cd '.$command.'; ls pwd');
                 $commands = str_replace('\n','',$command);
                 $command = str_replace(' ','',$sessionCwd).($sessionCwd ? '/' :'').$command;
@@ -77,14 +79,14 @@ class CommandController extends Controller
                 $command = str_replace(' ','',$sessionCwd).($sessionCwd ? '/' :'').$command;
               }
                 $this->Session->PutSession('cwd',$command);
+                $pwd = $this->ssh->exec('cd '.$command.'; pwd');
+                $pwd = trim(preg_replace('/\s+/', ' ', $pwd));
                 $command = $this->ssh->exec('cd '.$sessionCwd);
-                $pwd = $this->ssh->exec('cd '.$sessionCwd.'; pwd');
-                $pwd = str_replace('\n','',$pwd);
                 $this->Session->PutSession('cwd_name',$pwd);
+
             }elseif ($command == 'history') {
               $sessionOutput->push($sessionHistory);
             }else {
-              // $command = $this->ssh->exec('cd public_html/exlampleproject/..; ls; pwd');
               $command = $this->ssh->exec('cd '.$sessionCwd.'; '.$command);
             }
             $sessionOutput->push($command);
@@ -99,6 +101,7 @@ class CommandController extends Controller
         $this->Session->PutSession('cwd_name',$sessionTable->directory);
       }
     }
+
     public function getInformation()
     {
       if ($this->Session->HasSession('cloud')) {

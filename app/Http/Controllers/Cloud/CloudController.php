@@ -6,19 +6,24 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\Database\CloudTable;
 use App\Repositories\SSH2\Connection;
+use App\Repositories\Session\OtherSession;
 
 class CloudController extends Controller
 {
   protected $cloud;
   protected $SSH2;
+  protected $session;
 
   public function __construct()
   {
     $this->cloud   =  new CloudTable;
     $this->SSH2   =  new Connection;
+    $this->session   =  new OtherSession;
   }
     public function index()
     {
+      // delete session on command line
+      $this->ForgetSession_command();
       $cloud = $this->cloud->Cloudall();
       $data = array(
         'cloud' => $cloud,
@@ -111,5 +116,16 @@ class CloudController extends Controller
         return response()->json(['errors' => 'lost Connection check your configuration']);
       }
       return response()->json(['success' => 'Successfully']);
+    }
+
+    public function ForgetSession_command()
+    {
+      // forget session on commandline
+      $this->session->ForgetSession('cloud');
+      $this->session->ForgetSession('output');
+      $this->session->ForgetSession('history');
+      $this->session->ForgetSession('cwd');
+      $this->session->ForgetSession('cwd_name');
+      $this->session->ForgetSession('firstcommand');
     }
 }
