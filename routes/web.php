@@ -39,7 +39,9 @@ Route::group(['prefix'=>'cloud', 'middleware' => ['isUser']],function(){
 	Route::post('update','Cloud\CloudController@update')->name('cloud.update');
 	Route::post('delete','Cloud\CloudController@delete')->name('cloud.delete');
 	Route::post('commandline','Cloud\CommandController@index')->name('cloud.command');
+	Route::post('runcommand','Cloud\CommandController@runcommand');
 	Route::post('information','Cloud\CommandController@getInformation');
+	Route::post('getlocation','Cloud\CommandController@getlocation');
 	Route::post('testconnection','Cloud\CloudController@testConnection');
 });
 

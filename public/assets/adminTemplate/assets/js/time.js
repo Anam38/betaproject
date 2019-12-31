@@ -104,4 +104,4 @@ getinformation = function() {
 update();
 getinformation()
 window.setInterval(update, 1000);
-// setInterval(function(){getinformation(); },5000);
+setInterval(function(){getinformation(); },5000);

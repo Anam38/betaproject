@@ -32,7 +32,9 @@
                         <tbody style="font-size: 12px;">
                           <tr>
                               <td>Host Name</td>
-                              <td id="host_name"></td>
+                              <td id="host_name">
+                                <div class="br-loader animate-loader initBeforeMount" for="wallet" style="height: 20px; background: #777; width: 100px;"></div>
+                              </td>
                           </tr>
                           <tr>
                               <td>Location</td>
@@ -44,19 +46,26 @@
                           </tr>
                           <tr>
                               <td>Operating System</td>
-                              <td id="operation_system"></td>
+                              <td id="operation_system">
+                                <div class="br-loader animate-loader initBeforeMount" for="wallet" style="height: 20px; background: #777; width: 170px;"></div>
+                              </td>
                           </tr>
                           <tr>
                               <td>CPU(s) Speed</td>
-                              <td id="cpu_speed"></td>
+                              <td id="cpu_speed">
+                                <div class="br-loader animate-loader initBeforeMount" for="wallet" style="height: 20px; background: #777; width: 120px;"></div>
+                              </td>
                           </tr>
                           <tr>
                               <td>Memory</td>
-                              <td id="memory"></td>
+                              <td id="memory">
+                                <div class="br-loader animate-loader initBeforeMount" for="wallet" style="height: 20px; background: #777; width: 300px;"></div>
+                            </td>
                           </tr>
                           <tr>
                               <td>Disck Space</td>
                               <td id="disck">
+                                <div class="br-loader animate-loader initBeforeMount" for="wallet" style="height: 20px; background: #777; width: 300px;"></div>
                               </td>
                           </tr>
                         </tbody>
@@ -72,46 +81,49 @@
                       <h4>Command Line</h4>
                   </div>
                   <h5 class="ml-2 mb-0">Information for command Git</h5>
-                  <ul class="mb-1">
-                      <li>Git Push example : "git push https://username:password@myrepository.biz/file.git --all"</li>
+                  <ul class="mb-2">
+                      <li>Git Push example : "git push https://username:password@yourrepository.biz/file.git --all"</li>
                   </ul>
-                  <form class="command-form" action="{{ route('cloud.command')}}" method="post">
+                  <form class="command-form" action="javascript:void(0)" method="post" {{ $location ? "data-cloud" : "" }} data-id="{{ $id }}">
                     <div><input name="levelup" id="levelup" type="hidden"></div>
                     <div><input name="changedirectory" id="changedirectory" type="hidden"></div>
-                    <div class="form-control" id="command-output" style="height:700px;overflow:auto;font-size: 12px; word-spacing: 2px; ">
-                      <!-- show command -->
-                      @foreach((Session::has('output') ? Session::get('output') : array()) as $item)
-                        @if(is_array($item))
-                          @foreach($item as $items)
-                            @if(strpos($items, '$') === false)
-                            <div style="padding-left:20px;">
-                              {!! $items !!} <br>
-                            </div>
-                            @else
-                              {!! $items !!} <br>
-                            @endif
-                          @endforeach
-                        @else
-                          @if(strpos($item, '$') === false)
-                          <div style="padding-left:20px;">
-                            {!! $item !!} <br>
-                          </div>
-                          @elseif(strpos($item, '\n') === false)
-                            {!! $item !!} <br>
+                    <div class="form-control" id="command-output" style="height:610px;overflow:auto;font-size: 12px; word-spacing: 2px; ">
+                      <div class="command-output">
+                        <!-- show command -->
+                        @foreach((Session::has('output') ? Session::get('output') : array()) as $item)
+                          @if(is_array($item))
+                            @foreach($item as $items)
+                              @if($items)
+                                <div style="padding-left:20px;">
+                                  {!! $items !!} <br>
+                                </div>
+                              @endif
+                            @endforeach
                           @else
-                            {!! $item !!} <br>
+                            @if(strpos($item, '$') === false)
+                              @if(strpos($item, '\n') == false)
+                                <div style="padding-left:20px;">
+                                  {!! trim(preg_replace('/\n/', '<br>', $item)) !!} <br>
+                                </div>
+                              @endif
+                            @else
+                                {!! $item !!} <br>
+                            @endif
                           @endif
-                        @endif
-                      @endforeach
+                        @endforeach
+                      </div>
                       <div class="row">
                         <div style="display: inline-flex;width:100%;padding-left:5px;">
-                          <label style="padding: 5px 2px;">~{{ Session::get('cwd_name') }}$</label>
-                          <input style="height:30px;" type="text" name="command" class="form-control" placeholder="Input here" autofocus>
+                          <label style="padding: 5px 2px;" id="cwd_name" >~{{ Session::get('cwd_name') }}$</label>
+                          <input style="height:30px;" type="text" id="command" name="command" class="form-control" placeholder="Input here" autofocus>
                         </div>
                       </div>
                     </div>
                     @csrf()
                   </form>
+                  <button type="button" id="scrolltop" top="1" class="btn btn-outline-info btn-round float-right" style="margin:-55px 15px;position:relative;">
+                    <i class="fas fa-angle-double-up"></i>
+                  </button>
                 </div>
               </div>
               <!--end card-->
