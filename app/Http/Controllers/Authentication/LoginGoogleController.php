@@ -37,7 +37,7 @@ class LoginGoogleController extends Controller
         if ($valid) {
           // save session sutenticator
           $this->session->StoreAuthenticator(base64_encode($secret));
-          return redirect()->route('command.index');
+          return redirect()->route('cloud.command');
         }else {
           return redirect()->back()->with('errors',['Invalid PIN']);
         }

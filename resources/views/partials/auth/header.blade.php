@@ -9,7 +9,7 @@
     <meta content="A premium admin dashboard template by Mannatthemes" name="description">
     <meta content="Mannatthemes" name="author">
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('assets/adminTemplate/assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/adminTemplate/assets/images/cloud2.png') }}">
     <!-- App css -->
     @include('partials.auth.snipets.style')
   </head>

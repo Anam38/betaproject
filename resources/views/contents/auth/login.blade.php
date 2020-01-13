@@ -9,11 +9,11 @@
                     <div class="card-body">
                         <div class="px-3">
                             <div class="auth-logo-box">
-                                <a href="{{ route('home')}}" class="logo logo-admin"><img src="{{ asset('assets/adminTemplate/assets/images/logo-sm.png') }}" height="55" alt="logo" class="auth-logo"></a>
+                                <a href="{{ route('home')}}" class="logo logo-admin"><img src="{{ asset('assets/adminTemplate/assets/images/cloud2.png') }}" height="70" alt="logo" class=""></a>
                             </div>
                             <!--end auth-logo-box-->
                             <div class="text-center auth-logo-text">
-                                <h4 class="mt-0  mt-5">Let's Get Started Metrica</h4>
+                                <h4 class="mt-0  mt-5">User Login</h4>
                             </div>
                             <!--end auth-logo-text-->
                             @if(session()->has("errors"))

@@ -31,7 +31,7 @@ var command = function(serialize) {
     },
     success : function(response){
       var output = ''
-      console.log(response.original.sessionOutput);
+      elementheight = $('#command-output').prop('scrollHeight');
       $('#cwd_name').text('~'+response.original.sessionCwdname+'$')
       $.each(response.original.sessionOutput,function(index,value){
         if (Array.isArray(value)) {
@@ -50,9 +50,9 @@ var command = function(serialize) {
           }
         }
       });
-      console.log(response.original.sessionOutput);
       $('.command-output').html(output);
       $('#command').val('').focus();
+      $('#command-output').animate({scrollTop: elementheight })
     },
     error: function (e) {
         console.log("Internal error contact customer service");

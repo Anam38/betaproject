@@ -108,6 +108,7 @@ class CommandController extends Controller
                     $pwdname = $pwd;
                   }else {
                     $command = 'No such file or directory';
+                    $pwdname = $sessionCwdname;
                   }
                 }
 

@@ -39,17 +39,18 @@ Route::group(['prefix'=>'cloud', 'middleware' => ['isUser']],function(){
 	Route::post('update','Cloud\CloudController@update')->name('cloud.update');
 	Route::post('delete','Cloud\CloudController@delete')->name('cloud.delete');
 	Route::post('commandline','Cloud\CommandController@index')->name('cloud.command');
+	// ->middleware('AuthenticatorAuth')
 	Route::post('runcommand','Cloud\CommandController@runcommand');
 	Route::post('information','Cloud\CommandController@getInformation');
 	Route::post('getlocation','Cloud\CommandController@getlocation');
 	Route::post('testconnection','Cloud\CloudController@testConnection');
 });
 
-Route::group(['prefix'=>'command', 'middleware' => ['isUser','AuthenticatorAuth']],function(){
-	Route::get('','Command\CommandController@index')->name('command.index');
-	Route::post('','Command\CommandController@submitcommand')->name('command.submit');
-	Route::post('/login','Command\CommandController@login')->name('command.login');
-});
+// Route::group(['prefix'=>'command', 'middleware' => ['isUser','AuthenticatorAuth']],function(){
+// 	Route::get('','Command\CommandController@index')->name('command.index');
+// 	Route::post('','Command\CommandController@submitcommand')->name('command.submit');
+// 	Route::post('/login','Command\CommandController@login')->name('command.login');
+// });
 
 Route::get('logout','Authentication\LoginController@logout')->name('logout');
 
