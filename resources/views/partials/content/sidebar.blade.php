@@ -12,6 +12,7 @@
                       <ul class="nav">
                         <li class="nav-item"><a class="nav-link @if( Request::segment(1) == '/') active @endif" href="{{ route('home') }}"><i class="dripicons-device-desktop"></i>Dashboard</a></li>
                         <li class="nav-item"><a class="nav-link @if( Request::segment(1) == 'cloud') active @endif" href="{{ route('cloud.index') }}"><i class="dripicons-cloud"></i>Cloud</a></li>
+                        <li class="nav-item"><a class="nav-link @if( Request::segment(1) == 'chats') active @endif" href="{{ route('chats.index') }}"><i class="dripicons-conversation"></i>Chat</a></li>
                       </ul>
                 </div>
             </div>

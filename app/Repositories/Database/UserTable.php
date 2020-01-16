@@ -78,4 +78,19 @@ class UserTable
 			return $e->getMessage();
 		}
 	}
+
+	public function JoinToMessage()
+	{
+		try {
+			$user = DB::table('users')
+						->leftJoin('messages', 'users.id', '=', 'messages.user_id')
+						->get();
+			// $user = DB::table('users')
+			// 			->leftJoin('messages', 'users.id', '=', 'messages.user_id')
+			// 			->get();
+			return $user;
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
 }
