@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use App\Repositories\Session\AuthSession;
+use Auth;
 
 class Guestuser
 {
@@ -22,7 +23,7 @@ class Guestuser
      */
     public function handle($request, Closure $next)
     {
-      if ($this->session->HashAuthUser()) {
+      if (Auth::check()) {
         return redirect()->route('home');
       }else {
         return $next($request);

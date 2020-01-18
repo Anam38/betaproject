@@ -25,9 +25,9 @@
                             @endif
                             <form class="form-horizontal auth-form my-4" method="post" action="{{ route('login.submit') }}">
                                 <div class="form-group">
-                                    <label for="username">Username</label>
+                                    <label for="username">Email</label>
                                     <div class="input-group "><span class="auth-form-icon"><i class="dripicons-user"></i> </span>
-                                        <input type="text" class="form-control" name="username" id="username" placeholder="Enter username">
+                                        <input type="text" class="form-control" name="email" id="username" placeholder="Enter username">
                                     </div>
                                 </div>
                                 <!--end form-group-->
