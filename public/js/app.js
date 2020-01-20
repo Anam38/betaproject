@@ -2087,7 +2087,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 // button get data for delete
 $(document).on('click', '.new-chat', function () {
   $('#modal-newchat').modal('show');
@@ -2100,13 +2099,16 @@ $(document).on('click', '.new-chat', function () {
       users: [],
       usersAll: [],
       listChat: [],
+      userOnline: '',
       newMessage: '',
       UserName: '',
+      UserID: '',
       MessageID: '',
       placeholderMessage: '',
       isNotif: 0,
       isOnline: 0,
-      isContent: true
+      isContent: true,
+      typingTimer: false
     };
   },
   created: function created() {
@@ -2121,11 +2123,14 @@ $(document).on('click', '.new-chat', function () {
 
     Echo.join('chat').here(function (user) {
       _this.users = user;
-      _this.isOnline = 1;
     }).joining(function (user) {
-      _this.isOnline = 1;
+      if (_this.userOnline == user.id) {
+        _this.isOnline = 1;
+      }
     }).leaving(function (user) {
-      _this.isOnline = 0;
+      if (_this.userOnline == user.id) {
+        _this.isOnline = 0;
+      }
     }).listen('MessageEvent', function (event) {
       var isTrue = _this.listChat.filter(function (item) {
         return item.id == event.message.message_id;
@@ -2145,6 +2150,16 @@ $(document).on('click', '.new-chat', function () {
       if (event.status > 0) {
         _this.isOnline = 2;
       }
+    }).listenForWhisper('typing', function (user) {
+      console.log(user);
+
+      if (_this.typingTimer) {
+        clearTimeout(_this.typingTimer);
+      }
+
+      _this.typingTimer = setTimeout(function () {
+        _this.isOnline = 3;
+      }, 3000);
     });
   },
   methods: {
@@ -2192,10 +2207,27 @@ $(document).on('click', '.new-chat', function () {
     },
     // get data message base on user id
     openchat: function openchat(messageId, User) {
+      var userId = '';
+
       if (this.user.id == User.user_id_1) {
-        this.UserName = User.user_id_2;
+        this.UserName = User.name_2;
+        this.userOnline = User.user_id_2;
+        userId = User.user_id_2;
       } else {
-        this.UserName = User.user_id_1;
+        this.UserName = User.name_1;
+        this.userOnline = User.user_id_1;
+        userId = User.user_id_1;
+      } // check if user choose same with user online
+
+
+      var isTrue = this.users.filter(function (item) {
+        return item.id == userId;
+      });
+
+      if (isTrue.length > 0) {
+        this.isOnline = 1;
+      } else {
+        this.isOnline = 0;
       }
 
       this.MessageID = messageId;
@@ -2223,6 +2255,9 @@ $(document).on('click', '.new-chat', function () {
         message: this.newMessage,
         message_id: messageId
       });
+    },
+    senTypingEvent: function senTypingEvent() {
+      Echo.join('chat').whisper('typing', this.user);
     }
   }
 });
@@ -47446,6 +47481,94 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function (global, factory) {
+	 true ? module.exports = factory() :
+	undefined;
+}(this, (function () { 'use strict';
+
+/**
+* @name VueJS vChatScroll (vue-chat-scroll)
+* @description Monitors an element and scrolls to the bottom if a new child is added
+* @author Theodore Messinezis <theo@theomessin.com>
+* @file v-chat-scroll  directive definition
+*/
+
+var scrollToBottom = function scrollToBottom(el, smooth) {
+  if (typeof el.scroll === "function") {
+    el.scroll({
+      top: el.scrollHeight,
+      behavior: smooth ? 'smooth' : 'instant'
+    });
+  } else {
+    el.scrollTop = el.scrollHeight;
+  }
+};
+
+var vChatScroll = {
+  bind: function bind(el, binding) {
+    var scrolled = false;
+
+    el.addEventListener('scroll', function (e) {
+      scrolled = el.scrollTop + el.clientHeight + 1 < el.scrollHeight;
+    });
+
+    new MutationObserver(function (e) {
+      var config = binding.value || {};
+      var pause = config.always === false && scrolled;
+      var addedNodes = e[e.length - 1].addedNodes.length;
+      var removedNodes = e[e.length - 1].removedNodes.length;
+
+      if (config.scrollonremoved) {
+        if (pause || addedNodes != 1 && removedNodes != 1) return;
+      } else {
+        if (pause || addedNodes != 1) return;
+      }
+
+      var smooth = config.smooth;
+      var loadingRemoved = !addedNodes && removedNodes === 1;
+      if (loadingRemoved && config.scrollonremoved && 'smoothonremoved' in config) {
+        smooth = config.smoothonremoved;
+      }
+      scrollToBottom(el, smooth);
+    }).observe(el, { childList: true, subtree: true });
+  },
+  inserted: function inserted(el, binding) {
+    var config = binding.value || {};
+    scrollToBottom(el, config.smooth);
+  }
+};
+
+/**
+* @name VueJS vChatScroll (vue-chat-scroll)
+* @description Monitors an element and scrolls to the bottom if a new child is added
+* @author Theodore Messinezis <theo@theomessin.com>
+* @file vue-chat-scroll plugin definition
+*/
+
+var VueChatScroll = {
+  install: function install(Vue, options) {
+    Vue.directive('chat-scroll', vChatScroll);
+  }
+};
+
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(VueChatScroll);
+}
+
+return VueChatScroll;
+
+})));
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ChatComponent.vue?vue&type=template&id=80d584ac&":
 /*!****************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ChatComponent.vue?vue&type=template&id=80d584ac& ***!
@@ -47536,32 +47659,19 @@ var render = function() {
                         }
                       },
                       [
-                        _c("div", { staticClass: "media-left" }, [
-                          _c("img", {
-                            staticClass: "rounded-circle thumb-md",
-                            attrs: {
-                              src:
-                                "http://remotecould.site/assets/adminTemplate/assets/images/widgets/opp-1.png",
-                              alt: "user"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _vm.isOnline
-                            ? _c("span", { staticClass: "round-10 bg-success" })
-                            : _c("span", { staticClass: "round-10 bg-danger" })
-                        ]),
+                        _vm._m(2, true),
                         _vm._v(" "),
                         _c("div", { staticClass: "media-body" }, [
                           _c("div", { staticClass: "d-inline-block" }, [
                             listItem.user_id_2 == _vm.user.id
-                              ? _c("h6", [_vm._v(_vm._s(listItem.user_id_1))])
-                              : _c("h6", [_vm._v(_vm._s(listItem.user_id_2))]),
+                              ? _c("h6", [_vm._v(_vm._s(listItem.name_1))])
+                              : _c("h6", [_vm._v(_vm._s(listItem.name_2))]),
                             _vm._v(" "),
                             _vm.MessageID == listItem.id
                               ? _c("p", [
                                   _vm._v(_vm._s(_vm.placeholderMessage))
                                 ])
-                              : _vm._e()
+                              : _c("p", [_vm._v(_vm._s(listItem.last_message))])
                           ]),
                           _vm._v(" "),
                           _c("div", [
@@ -47629,7 +47739,7 @@ var render = function() {
         : _c("div", [
             _c("div", { staticClass: "chat-header" }, [
               _c("a", { staticClass: "media", attrs: { href: "#" } }, [
-                _vm._m(2),
+                _vm._m(3),
                 _vm._v(" "),
                 _c("div", { staticClass: "media-body" }, [
                   _c("div", [
@@ -47667,6 +47777,9 @@ var render = function() {
                       return _c(
                         "div",
                         {
+                          directives: [
+                            { name: "chat-scroll", rawName: "v-chat-scroll" }
+                          ],
                           key: index,
                           staticClass: "chat-detail slimscroll",
                           staticStyle: {
@@ -47786,6 +47899,7 @@ var render = function() {
                     },
                     domProps: { value: _vm.newMessage },
                     on: {
+                      keydown: _vm.senTypingEvent,
                       keyup: [
                         function($event) {
                           return _vm.statusUpdate("id")
@@ -47816,7 +47930,7 @@ var render = function() {
                   })
                 ]),
                 _vm._v(" "),
-                _vm._m(3)
+                _vm._m(4)
               ])
             ])
           ])
@@ -47838,7 +47952,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-dialog modal-sm" }, [
           _c("div", { staticClass: "modal-content" }, [
-            _vm._m(4),
+            _vm._m(5),
             _vm._v(" "),
             _c(
               "div",
@@ -47890,7 +48004,7 @@ var render = function() {
                               ])
                             ]),
                             _vm._v(" "),
-                            _vm._m(5, true)
+                            _vm._m(6, true)
                           ]
                         )
                       ]
@@ -47941,6 +48055,21 @@ var staticRenderFns = [
           )
         ])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "media-left" }, [
+      _c("img", {
+        staticClass: "rounded-circle thumb-md",
+        attrs: {
+          src:
+            "http://remotecould.site/assets/adminTemplate/assets/images/widgets/opp-1.png",
+          alt: "user"
+        }
+      })
     ])
   },
   function() {
@@ -60193,9 +60322,13 @@ module.exports = function(module) {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vue_chat_scroll__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-chat-scroll */ "./node_modules/vue-chat-scroll/dist/vue-chat-scroll.js");
+/* harmony import */ var vue_chat_scroll__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue_chat_scroll__WEBPACK_IMPORTED_MODULE_0__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -60204,6 +60337,8 @@ module.exports = function(module) {
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
+Vue.use(vue_chat_scroll__WEBPACK_IMPORTED_MODULE_0___default.a);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

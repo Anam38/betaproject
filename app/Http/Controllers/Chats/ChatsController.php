@@ -13,6 +13,7 @@ use App\User;
 use App\Events\MessageEvent;
 use App\Events\UpdateMessageStatus;
 use Auth;
+use Illuminate\Support\Facades\DB;
 
 class ChatsController extends Controller
 {
@@ -42,7 +43,25 @@ class ChatsController extends Controller
     public function fetchChat()
     {
       $user = Auth::user();
-      return $this->message->MessageWhere($user->id)->with('user')->get();
+      $message = $this->message->MessageWhere($user->id)->with('user')->get();
+      $users = $this->user->UserAll();
+
+      $data = array();
+      foreach ($message as $key => $value) {
+        $messageData = collect($value);
+
+        $name1 = $users->where('id',$value->user_id_1)->first()->name;
+        $name2 = $users->where('id',$value->user_id_2)->first()->name;
+        $lastChat = $this->detailmessage->DetailMessageWhere($value->id)->orderBy('id', 'desc')->first();
+        if ($lastChat) {
+          $lastChat = $lastChat->message;
+        }
+        $messageData->put('name_1',$name1)->toArray();
+        $messageData->put('name_2',$name2)->toArray();
+        $data[] = $messageData->put('last_message',$lastChat)->toArray();
+      }
+      return $data;
+      // return $this->message->MessageWhere($user->id)->with('user')->get();
     }
 
     public function fetchMessages(Request $req)

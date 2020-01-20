@@ -22,15 +22,14 @@
                       <div class=""  v-for="(listItem, index) in listChat" :key="index" >
                         <a href="#" class="media new-message" v-on:click="openchat(listItem.id,listItem)" title="">
                             <div class="media-left"><img src="http://remotecould.site/assets/adminTemplate/assets/images/widgets/opp-1.png" alt="user" class="rounded-circle thumb-md">
-                                <span class="round-10 bg-success" v-if="isOnline"></span>
-                                <span class="round-10 bg-danger" v-else></span>
                             </div>
                               <!-- media-left -->
                               <div class="media-body">
                                   <div class="d-inline-block">
-                                      <h6 v-if="listItem.user_id_2 == user.id">{{ listItem.user_id_1 }}</h6>
-                                      <h6 v-else>{{ listItem.user_id_2 }}</h6>
+                                      <h6 v-if="listItem.user_id_2 == user.id">{{ listItem.name_1 }}</h6>
+                                      <h6 v-else>{{ listItem.name_2 }}</h6>
                                       <p v-if="MessageID == listItem.id">{{ placeholderMessage }}</p>
+                                      <p v-else >{{ listItem.last_message }}</p>
                                   </div>
                                   <div>
                                     <span>20 Feb</span>
@@ -78,7 +77,7 @@
             <!-- end chat-header -->
             <div class="chat-body" style="overflow:auto;">
                 <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 610px;">
-                    <div class="chat-detail slimscroll" style="overflow: hidden; width: auto; height:0px;min-height: 55px;"  v-for="(message, index) in messages" :key="index">
+                    <div class="chat-detail slimscroll" style="overflow: hidden; width: auto; height:0px;min-height: 55px;"  v-for="(message, index) in messages" :key="index" v-chat-scroll>
                         <!--isi chats-->
                         <div class="media" v-if="message.user_id == user.id">
                             <div class="media-body reverse">
@@ -86,8 +85,8 @@
                                     <p style="padding-left:16px">{{ message.message }}</p>
                                 </div>
                             </div>
+                          </div>
                             <!--end media-body-->
-                        </div>
                         <div class="media" v-else>
                             <div class="media-body ">
                               <div class="chat-msg" style="margin-left:0px" >
@@ -105,7 +104,7 @@
             <div class="chat-footer">
                 <div class="row">
                     <div class="col-12 col-md-9">
-                        <input v-on:keyup="statusUpdate('id')" @keyup.enter="sendMessage(MessageID)" v-model="newMessage" type="text" class="form-control" placeholder="Type something here...">
+                        <input @keydown="senTypingEvent" v-on:keyup="statusUpdate('id')" @keyup.enter="sendMessage(MessageID)" v-model="newMessage" type="text" class="form-control" placeholder="Type something here...">
                     </div>
                     <!-- col-8 -->
                     <div class="col-3 text-right">
@@ -168,13 +167,16 @@
           users               : [],
           usersAll            : [],
           listChat            : [],
+          userOnline          : '',
           newMessage          : '',
           UserName            : '',
+          UserID              : '',
           MessageID           : '',
           placeholderMessage  : '',
           isNotif             : 0,
           isOnline            : 0,
           isContent           : true,
+          typingTimer         : false,
         }
       },
       created() {
@@ -188,13 +190,16 @@
         Echo.join('chat')
               .here(user => {
                 this.users = user;
-                this.isOnline = 1;
               })
               .joining(user => {
-                this.isOnline = 1;
+                if(this.userOnline == user.id){
+                  this.isOnline = 1;
+                }
               })
               .leaving(user => {
-                this.isOnline = 0;
+                if(this.userOnline == user.id){
+                  this.isOnline = 0;
+                }
               })
               .listen('MessageEvent',(event) => {
                 var isTrue = this.listChat.filter(item => item.id == event.message.message_id);
@@ -210,6 +215,15 @@
                 if(event.status > 0){
                   this.isOnline = 2;
                 }
+              })
+              .listenForWhisper('typing', user => {
+                console.log(user);
+                if (this.typingTimer) {
+                  clearTimeout(this.typingTimer);
+                }
+                this.typingTimer = setTimeout(() => {
+                  this.isOnline = 3;
+                },3000);
               })
       },
       methods: {
@@ -245,12 +259,26 @@
         },
         // get data message base on user id
         openchat(messageId, User) {
+          var userId = '';
           if(this.user.id == User.user_id_1){
-            this.UserName = User.user_id_2;
+            this.UserName = User.name_2;
+            this.userOnline = User.user_id_2;
+            userId = User.user_id_2;
           }else {
-            this.UserName = User.user_id_1;
+            this.UserName = User.name_1;
+            this.userOnline = User.user_id_1;
+            userId = User.user_id_1;
           }
+          // check if user choose same with user online
+          var isTrue = this.users.filter(item => item.id == userId);
+          if (isTrue.length > 0) {
+            this.isOnline = 1
+          }else {
+            this.isOnline = 0
+          }
+
           this.MessageID = messageId;
+
           if(this.isNotif > 0){
             this.statusUpdate(messageId);
           }
@@ -273,6 +301,10 @@
             message_id: messageId
           })
         },
+        senTypingEvent() {
+          Echo.join('chat')
+              .whisper('typing', this.user);
+        }
       }
     }
 </script>
