@@ -3,29 +3,25 @@
 namespace App\Repositories\Database;
 
 use Illuminate\Support\Facades\DB;
+use App\Message;
 
 class MessageTable
 {
-
-	function __construct()
-	{
-		# code...
-	}
 	public function MessageAll()
 	{
 		try {
-			$user = DB::table('messages')->get();
-			return $user;
+			$message = Message::get();
+			return $message;
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
 
-	public function MessageWhere($where,$email)
+	public function MessageWhere($userId)
 	{
 		try {
-			$user = DB::table('messages')->where($where,$email)->first();
-			return $user;
+			$message = Message::where('user_id_1',$userId)->orWhere('user_id_2', $userId);
+			return $message;
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -38,10 +34,10 @@ class MessageTable
 	public function MessageInsert($data)
 	{
 		try {
-			$user = DB::table('messages')->insert(
+			$message = Message::create(
 				$data
 			);
-			return true;
+			return $message;
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
@@ -59,4 +55,5 @@ class MessageTable
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
 }

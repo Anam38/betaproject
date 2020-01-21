@@ -2,12 +2,12 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Metrica - Responsive Bootstrap 4 Admin Dashboard</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta content="A premium admin dashboard template by Mannatthemes" name="description">
   <meta content="Mannatthemes" name="author">
   <link rel="shortcut icon" href="{{ asset('assets/adminTemplate/assets/images/cloud2.png') }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <!-- App favicon -->
   @include('partials.content.snipets.style')
   </head>
@@ -20,10 +20,10 @@
       <nav class="navbar-custom">
           <ul class="list-unstyled topbar-nav float-right mb-0">
               <li class="dropdown">
-                  <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                  <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="{{ route('logout') }}" role="button" aria-haspopup="false" aria-expanded="false">
                     <!-- <img src="{{ asset('assets/adminTemplate/assets/images/users/user-4.jpg') }}" alt="profile-user" class="rounded-circle"> -->
                     <span class="ml-1 nav-user-name hidden-sm">
-                      {{ Session::get('authuser')['username']}}
+                      {{ Auth::user()->name }}
                       <i class="mdi mdi-chevron-down"></i>
                     </span>
                   </a>
@@ -41,7 +41,7 @@
       </nav>
       <!-- end navbar-->
   </div>
-  <div class="page-wrapper">
+  <div class="page-wrapper" id="app">
     <!-- Left Sidenav -->
       @include('partials.content.sidebar')
     <!-- end left-sidenav-->

@@ -38,9 +38,10 @@ class RegisterController extends Controller
       }
 
       try {
-        $google2fa = app('pragmarx.google2fa');
-        // Add the secret key to the registration data
-        $secret = $google2fa->generateSecretKey();
+        // $google2fa = app('pragmarx.google2fa');
+        //// Add the secret key to the registration data
+        // $secret = $google2fa->generateSecretKey();
+        $secret = base64_encode('data');
         // data to insert to table user
         $datauser = array(
           'name'      => $request->username,
